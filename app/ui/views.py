@@ -271,10 +271,10 @@ class MainWindow(ctk.CTk):
                          text=f"Ошибка инициализации модуля: {e}",
                          text_color="red").pack(pady=20)
 
-            def show_habit_view(self):
-                self.clear_content()
-                container = ctk.CTkFrame(self.content_frame, fg_color="transparent")
-                container.pack(fill="both", expand=True)
+    def show_habit_view(self):
+        self.clear_content()
+        container = ctk.CTkFrame(self.content_frame, fg_color="transparent")
+        container.pack(fill="both", expand=True)
 
         ctk.CTkLabel(container, text="Трекер привычек", font=("Arial", 18, "bold")).pack(pady=10)
 
