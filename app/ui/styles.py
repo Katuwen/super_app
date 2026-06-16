@@ -1,1 +1,36 @@
-# Стили (цвета, шрифты)
+# Цвета
+COLOR_PRIMARY = "#2b6cb0"
+COLOR_PRIMARY_HOVER = "#245a96"
+COLOR_SUCCESS = "green"
+COLOR_DANGER = "#e74c3c"
+COLOR_DANGER_HOVER = "#c0392b"
+COLOR_WARNING = "orange"
+COLOR_DISABLED_BG = "#555"
+COLOR_CONTENT_BG = "transparent"
+COLOR_CARD_BG = "#2b2b2b"
+COLOR_CARD_BG_LIGHT = "#d4edda"
+COLOR_CARD_BG_DARK = "#1b4332"
+COLOR_TEXT_MUTED = "gray"
+
+# Шрифты
+FONT_LOGO = ("Arial", 24, "bold")
+FONT_TITLE = ("Arial", 18, "bold")
+FONT_SUBTITLE = ("Arial", 14, "bold")
+FONT_BODY = ("Arial", 14)
+FONT_SMALL = ("Arial", 12)
+FONT_SMALL_BOLD = ("Arial", 12, "bold")
+FONT_COUNTDOWN = ("Arial", 16)
+
+# Размеры
+WIDTH_SIDEBAR = 200
+WIDTH_WINDOW = "1000x700"
+MIN_WIDTH = 800
+MIN_HEIGHT = 600
+PAD_SIDEBAR = 20
+PAD_CONTENT = 20
+
+# Кнопки
+BTN_SIDEBAR_HEIGHT = 40
+BTN_HEIGHT = 32
+BTN_ACTION_WIDTH = 120
+BTN_ICON_WIDTH = 30
