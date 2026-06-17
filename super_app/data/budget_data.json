@@ -1,0 +1,44 @@
+{
+    "balance": -142.0,
+    "transactions": [
+        {
+            "date": "17.06.2026 16:37",
+            "amount": 400.0,
+            "category": "Учеба",
+            "type": "expense"
+        },
+        {
+            "date": "17.06.2026 16:21",
+            "amount": 44.0,
+            "category": "Здоровье",
+            "type": "expense"
+        },
+        {
+            "date": "17.06.2026 16:21",
+            "amount": 290.0,
+            "category": "Транспорт",
+            "type": "income"
+        },
+        {
+            "date": "17.06.2026 16:21",
+            "amount": 32.0,
+            "category": "Еда",
+            "type": "income"
+        },
+        {
+            "date": "17.06.2026 16:20",
+            "amount": 20.0,
+            "category": "Еда",
+            "type": "expense"
+        }
+    ],
+    "categories": [
+        "Еда",
+        "Транспорт",
+        "Развлечения",
+        "Учеба",
+        "Здоровье",
+        "Прочее"
+    ],
+    "goals": []
+}
