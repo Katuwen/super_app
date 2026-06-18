@@ -1,4 +1,4 @@
-# SuperApp v1.0
+# SuperApp v2.0
 
 Мульти-утилитное десктопное приложение на Python с графическим интерфейсом.
 
@@ -53,31 +53,62 @@ python main.py
 
 ## Тесты
 
+71 юнит-тест покрывающий все 5 утилит.
+
 ```bash
-python -m unittest discover tests -v
+# Запуск всех тестов
+python -m unittest discover -s tests -v
+
+# Запуск конкретного модуля
+python tests/test_currency_tracker.py
 ```
+
+### Покрытие по модулям
+
+| Модуль | Тестов | Файл |
+|--------|--------|------|
+| Currency Tracker | 5 | `test_currency_tracker.py` |
+| Expense Manager | 11 | `test_expense_manager.py` |
+| Habit Tracker | 12 | `test_habit_tracker.py` |
+| Note Manager | 29 | `test_note_manager.py` |
+| Schedule Manager | 14 | `test_schedule_manager.py` |
+| **Итого** | **71** | |
 
 ## Структура проекта
 
 ```
 super_app/
-├── main.py                    # Точка входа
+├── main.py                        # Точка входа
 ├── app/
+│   ├── __init__.py
 │   ├── core/
-│   │   ├── config.py
-│   │   └── navigation.py
+│   │   ├── __init__.py
+│   │   ├── config.py              # Конфигурация приложения
+│   │   └── navigation.py          # Навигация между модулями
 │   ├── ui/
-│   │   ├── views.py           # Главное окно и виджеты
-│   │   └── styles.py          # Цвета, шрифты, размеры
+│   │   ├── __init__.py
+│   │   ├── views.py               # Главное окно и виджеты
+│   │   └── styles.py              # Цвета, шрифты, размеры
 │   └── utils/
-│       ├── currency_tracker.py
-│       ├── expense_manager.py
-│       ├── habit_tracker.py
-│       ├── schedule_manager.py
-│       └── note_manager.py
+│       ├── __init__.py
+│       ├── currency_tracker.py    # Курсы валют ЦБ РФ
+│       ├── expense_manager.py     # Учёт доходов/расходов
+│       ├── habit_tracker.py       # Трекер привычек
+│       ├── note_manager.py        # Блокнот заметок
+│       └── schedule_manager.py    # Учебное расписание
+├── data/                          # Файлы данных (JSON, SQLite)
+│   ├── budget_data.json
+│   ├── habits_data.json
+│   ├── notes_data.json
+│   └── schedule.db
 ├── tests/
-│   ├── test_habit_tracker.py
-│   └── test_note_manager.py
-├── requirements.txt
+│   ├── test_currency_tracker.py   # Тесты модуля валют (5)
+│   ├── test_expense_manager.py    # Тесты модуля расходов (11)
+│   ├── test_habit_tracker.py      # Тесты модуля привычек (12)
+│   ├── test_note_manager.py       # Тесты модуля заметок (29)
+│   └── test_schedule_manager.py   # Тесты модуля расписания (14)
+├── .gitignore                     # Игнорирование venv, кэша, БД
+├── mypy.ini                       # Конфигурация mypy
+├── requirements.txt               # Зависимости проекта
 └── README.md
 ```

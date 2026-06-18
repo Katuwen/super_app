@@ -2,22 +2,28 @@ import unittest
 import os
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, PROJECT_ROOT)
 
-from app.utils.note_manager import NoteManager
+DATA_DIR = os.path.join(PROJECT_ROOT, "data")
+TEST_MAIN = "test_notes.json"
+TEST_EXPORT = "test_export.json"
+TEST_SECOND = "test_notes2.json"
 
 
 class TestNoteManager(unittest.TestCase):
     def setUp(self):
+        from app.utils.note_manager import NoteManager
         self.manager = NoteManager()
-        self.manager.data_file = "test_notes.json"
+        self.manager.data_file = os.path.join(DATA_DIR, TEST_MAIN)
         self.manager.data = {"notes": [], "tags": []}
         self.manager.save_data()
 
     def tearDown(self):
-        for f in ("test_notes.json", "test_export.json", "test_notes2.json"):
-            if os.path.exists(f):
-                os.remove(f)
+        for f in (TEST_MAIN, TEST_EXPORT, TEST_SECOND):
+            path = os.path.join(DATA_DIR, f)
+            if os.path.exists(path):
+                os.remove(path)
 
     # --- Базовые CRUD-операции ---
 
@@ -55,7 +61,6 @@ class TestNoteManager(unittest.TestCase):
     # --- Тестовые данные из таблицы ---
 
     def test_note_2_long_content_with_numbering(self):
-        """#2: План на неделю — длинный текст с нумерацией"""
         content = "1. Завершить практику. 2. Повторить ассемблер. 3. Отдохнуть в воскресенье."
         note_id = self.manager.add_note("План на неделю", content, ["важно", "работа"])
         note = self.manager.get_note_by_id(note_id)
@@ -63,7 +68,6 @@ class TestNoteManager(unittest.TestCase):
         self.assertEqual(len(note["tags"]), 2)
 
     def test_note_3_urgent_tag(self):
-        """#3: Ошибка в проекте — тег 'срочно'"""
         self.manager.add_note(
             "Ошибка в проекте",
             "При компиляции выдаёт undefined reference. Нужно проверить линковку.",
@@ -74,7 +78,6 @@ class TestNoteManager(unittest.TestCase):
         self.assertEqual(results[0]["title"], "Ошибка в проекте")
 
     def test_note_4_cyrillic_tag_with_space(self):
-        """#4: Идея для Тишины — кириллические теги"""
         note_id = self.manager.add_note(
             "Идея для Тишины",
             "Добавить раздел 'дыхательные упражнения'.",
@@ -86,7 +89,6 @@ class TestNoteManager(unittest.TestCase):
         self.assertEqual(len(results), 1)
 
     def test_note_5_long_title(self):
-        """#5: Очень длинный заголовок — хранение без обрезки"""
         long_title = "Заметка с очень длинным названием, которое точно выходит за пределы поля"
         note_id = self.manager.add_note(long_title, "Краткое содержание", ["тест"])
         note = self.manager.get_note_by_id(note_id)
@@ -94,7 +96,6 @@ class TestNoteManager(unittest.TestCase):
         self.assertEqual(len(note["title"]), len(long_title))
 
     def test_note_6_empty_title_and_content(self):
-        """#6: Пустые поля — NoteManager принимает, UI отклоняет"""
         note_id = self.manager.add_note("", "", [])
         note = self.manager.get_note_by_id(note_id)
         self.assertEqual(note["title"], "")
@@ -102,7 +103,6 @@ class TestNoteManager(unittest.TestCase):
         self.assertEqual(self.manager.get_notes_count(), 1)
 
     def test_note_7_special_characters(self):
-        """#7: Спецсимволы в содержании и тегах"""
         content = "Символы: !@#$%^&*()_+-={}[]|;:'\",.<>?/"
         note_id = self.manager.add_note("Теги только", content, ["спецсимволы", "123"])
         note = self.manager.get_note_by_id(note_id)
@@ -111,7 +111,6 @@ class TestNoteManager(unittest.TestCase):
         self.assertIn("123", note["tags"])
 
     def test_note_8_search_by_content_word(self):
-        """#8: Поиск по слову в содержимому"""
         self.manager.add_note(
             "Заметка для поиска",
             "Проверка поиска по слову 'тестирование'",
@@ -123,7 +122,6 @@ class TestNoteManager(unittest.TestCase):
         self.assertEqual(results[0]["title"], "Заметка для поиска")
 
     def test_note_8_search_by_title_partial(self):
-        """#8: Поиск по части заголовка"""
         self.manager.add_note("Изучить код 222", "1111", ["работа", "код"])
         results = self.manager.search_notes("код")
         self.assertTrue(len(results) >= 1)
@@ -131,13 +129,11 @@ class TestNoteManager(unittest.TestCase):
         self.assertIn("Изучить код 222", titles)
 
     def test_note_8_search_by_tag(self):
-        """#8: Поиск находит совпадение по тегу"""
         self.manager.add_note("Заметка", "текст", ["уникальный_тег_xyz"])
         results = self.manager.search_notes("уникальный_тег_xyz")
         self.assertEqual(len(results), 1)
 
     def test_note_9_delete_flow(self):
-        """#9: Добавить → проверить существование → удалить → проверить отсутствие"""
         note_id = self.manager.add_note("Удалить позже", "Временная заметка", ["временно"])
         self.assertIsNotNone(self.manager.get_note_by_id(note_id))
         self.assertEqual(self.manager.get_notes_count(), 1)
@@ -146,7 +142,6 @@ class TestNoteManager(unittest.TestCase):
         self.assertEqual(self.manager.get_notes_count(), 0)
 
     def test_note_10_mixed_language_tags(self):
-        """#10: Смешанные теги — русский + английский"""
         note_id = self.manager.add_note(
             "Смешанные теги",
             "английский и русский одновременно",
@@ -173,7 +168,6 @@ class TestNoteManager(unittest.TestCase):
         self.assertEqual(len(results), 0)
 
     def test_filter_by_tag_exact_match(self):
-        """Фильтр по тегу 'код' не должен включать тег 'кодинг'"""
         self.manager.add_note("A", "текст", ["код"])
         self.manager.add_note("B", "текст", ["кодинг"])
         results = self.manager.filter_by_tag("код")
@@ -211,7 +205,6 @@ class TestNoteManager(unittest.TestCase):
         self.assertIn("важно", tags)
 
     def test_duplicate_tags_not_duplicated(self):
-        """Один и тот же тег两次 не должен дублироваться в общем списке"""
         self.manager.add_note("A", "текст", ["работа"])
         self.manager.add_note("B", "текст", ["работа"])
         tags = self.manager.get_all_tags()
@@ -221,25 +214,28 @@ class TestNoteManager(unittest.TestCase):
 
     def test_export_import(self):
         self.manager.add_note("Экспорт", "текст", ["тег"])
-        self.manager.export_notes("test_export.json")
+        export_path = os.path.join(DATA_DIR, TEST_EXPORT)
+        self.manager.export_notes(export_path)
+        from app.utils.note_manager import NoteManager
         new_manager = NoteManager()
-        new_manager.data_file = "test_notes2.json"
+        new_manager.data_file = os.path.join(DATA_DIR, TEST_SECOND)
         new_manager.data = {"notes": [], "tags": []}
-        new_manager.import_notes("test_export.json")
+        new_manager.import_notes(export_path)
         self.assertEqual(new_manager.get_notes_count(), 1)
 
     def test_import_nonexistent_file(self):
         with self.assertRaises(FileNotFoundError):
-            self.manager.import_notes("нет_такого_файла.json")
+            self.manager.import_notes(os.path.join(DATA_DIR, "нет_такого_файла.json"))
 
     def test_import_no_duplicates(self):
-        """Импорт не дублирует заметки с существующим ID"""
         note_id = self.manager.add_note("A", "текст", ["тег"])
-        self.manager.export_notes("test_export.json")
+        export_path = os.path.join(DATA_DIR, TEST_EXPORT)
+        self.manager.export_notes(export_path)
+        from app.utils.note_manager import NoteManager
         new_manager = NoteManager()
-        new_manager.data_file = "test_notes2.json"
+        new_manager.data_file = os.path.join(DATA_DIR, TEST_SECOND)
         new_manager.data = {"notes": [], "tags": []}
-        new_manager.import_notes("test_export.json")
+        new_manager.import_notes(export_path)
         self.assertEqual(new_manager.get_notes_count(), 1)
 
     # --- Временные метки ---
